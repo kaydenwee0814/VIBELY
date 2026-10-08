@@ -84,7 +84,7 @@
             Welcome back
         </div>
 
-        <form>
+        <form id="loginForm">
             <input type="text" placeholder="Username" required>
 
             <input type="password" placeholder="Password" required>
@@ -100,6 +100,20 @@
         </div>
 
     </div>
+<script>
+document.getElementById("loginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
 
+    const username = document.querySelector('input[type="text"]').value;
+    const savedUsername = localStorage.getItem("vibelyUsername");
+
+    if (username === savedUsername) {
+        alert("Login successful!");
+        window.location.href = "feed.html";
+    } else {
+        alert("Username not found. Please sign up first.");
+    }
+});
+</script>
 </body>
 </html>
