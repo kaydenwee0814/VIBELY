@@ -107,7 +107,11 @@
 
         if (savedUsername) {
             usernameInput.value = savedUsername;
-        }
+        }const bio = localStorage.getItem("vibelyBio");
+
+if (bio) {
+    document.getElementById("bio").textContent = bio;
+}
 
         if (savedBio) {
             document.getElementById("bio").value = savedBio;
