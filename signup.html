@@ -128,5 +128,19 @@
 
     </div>
 
+<script>
+    document.getElementById("signupForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const username = document.querySelector('input[type="text"]').value;
+
+        localStorage.setItem("vibelyUsername", username);
+
+        alert("Account created successfully!");
+
+        window.location.href = "login.html";
+    });
+</script>
+
 </body>
 </html>
