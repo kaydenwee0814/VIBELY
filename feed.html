@@ -178,5 +178,131 @@
 
     </div>
 
+<script>
+const postForm = document.getElementById("createPostForm");
+const captionInput = document.getElementById("postCaption");
+const photoInput = document.getElementById("postPhoto");
+
+function showPost(caption, photo, username) {
+    const post = document.createElement("div");
+    post.className = "post";
+
+    const header = document.createElement("div");
+    header.className = "post-header";
+    header.textContent = "@" + username;
+    post.appendChild(header);
+
+    if (photo) {
+        const imageBox = document.createElement("div");
+        imageBox.className = "post-image";
+
+        const img = document.createElement("img");
+        img.src = photo;
+        img.alt = "Post photo";
+        img.style.width = "100%";
+        img.style.display = "block";
+
+        imageBox.appendChild(img);
+        post.appendChild(imageBox);
+    }
+
+    const content = document.createElement("div");
+    content.className = "post-content";
+
+    const captionBox = document.createElement("div");
+    captionBox.className = "caption";
+
+    const name = document.createElement("b");
+    name.textContent = "@" + username + " ";
+
+    captionBox.appendChild(name);
+    captionBox.appendChild(document.createTextNode(caption));
+    content.appendChild(captionBox);
+    post.appendChild(content);
+
+    const createPost = document.querySelector(".create-post");
+    createPost.insertAdjacentElement("afterend", post);
+}
+
+let savedPosts = [];
+
+try {
+    savedPosts = JSON.parse(
+        localStorage.getItem("vibelyPosts") || "[]"
+    );
+} catch (error) {
+    savedPosts = [];
+}
+
+savedPosts.slice().reverse().forEach(function(item) {
+    showPost(item.caption, item.photo, item.username);
+});
+
+postForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const caption = captionInput.value.trim();
+    const file = photoInput.files[0];
+    const username =
+        localStorage.getItem("vibelyUsername") || "vibely_user";
+
+    if (!caption) {
+        alert("Please write a caption!");
+        return;
+    }
+
+    function publishPost(photo) {
+        const newPost = {
+            caption: caption,
+            photo: photo,
+            username: username
+        };
+
+        try {
+            savedPosts.unshift(newPost);
+            localStorage.setItem(
+                "vibelyPosts",
+                JSON.stringify(savedPosts)
+            );
+        } catch (error) {
+            savedPosts.shift();
+            alert("Storage is full. Try a smaller photo.");
+            return;
+        }
+
+        showPost(caption, photo, username);
+        captionInput.value = "";
+        photoInput.value = "";
+        alert("Post published!");
+    }
+
+    if (file) {
+        if (!file.type.startsWith("image/")) {
+            alert("Please choose an image file.");
+            return;
+        }
+
+        if (file.size > 1024 * 1024) {
+            alert("Please choose a photo smaller than 1 MB.");
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function() {
+            publishPost(reader.result);
+        };
+
+        reader.onerror = function() {
+            alert("Could not read the photo. Please try again.");
+        };
+
+        reader.readAsDataURL(file);
+    } else {
+        publishPost("");
+    }
+});
+</script>
+
 </body>
 </html>
