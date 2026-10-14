@@ -215,10 +215,36 @@ function showPost(caption, photo, username) {
     const name = document.createElement("b");
     name.textContent = "@" + username + " ";
 
+   
     captionBox.appendChild(name);
     captionBox.appendChild(document.createTextNode(caption));
     content.appendChild(captionBox);
+
+    const likeButton = document.createElement("button");
+    const likeCount = document.createElement("span");
+
+    let likes = 0;
+    let liked = false;
+
+    likeButton.textContent = "♡ Like";
+    likeCount.textContent = " 0 likes";
+
+    likeButton.style.cursor = "pointer";
+    likeButton.style.marginTop = "10px";
+
+    likeButton.addEventListener("click", function() {
+        liked = !liked;
+        likes = liked ? 1 : 0;
+
+        likeButton.textContent = liked ? "♥ Liked" : "♡ Like";
+        likeCount.textContent = " " + likes + (likes === 1 ? " like" : " likes");
+    });
+
+    content.appendChild(likeButton);
+    content.appendChild(likeCount);
+
     post.appendChild(content);
+
 
     const createPost = document.querySelector(".create-post");
     createPost.insertAdjacentElement("afterend", post);
