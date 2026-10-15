@@ -183,7 +183,7 @@ const postForm = document.getElementById("createPostForm");
 const captionInput = document.getElementById("postCaption");
 const photoInput = document.getElementById("postPhoto");
 
-function showPost(caption, photo, username) {
+function showPost(caption, photo, username, postId) {
     const post = document.createElement("div");
     post.className = "post";
 
@@ -250,7 +250,7 @@ function showPost(caption, photo, username) {
     content.appendChild(likeCount);
 
     // Comments section
-    const commentKey = "vibelyComments_" + username + "_" + caption;
+    const commentKey = "vibelyComments_" + postId;
 
   
     const commentsBox = document.createElement("div");
@@ -348,8 +348,20 @@ try {
     savedPosts = [];
 }
 
+savedPosts.forEach(function(item) {
+    if (!item.id) {
+        item.id = Date.now().toString() + "_" + Math.random().toString(36).slice(2);
+    }
+});
+
+try {
+    localStorage.setItem("vibelyPosts", JSON.stringify(savedPosts));
+} catch (error) {
+    console.log("Could not save post IDs.");
+}
+
 savedPosts.slice().reverse().forEach(function(item) {
-    showPost(item.caption, item.photo, item.username);
+    showPost(item.caption, item.photo, item.username, item.id);
 });
 
 postForm.addEventListener("submit", function(event) {
@@ -366,11 +378,12 @@ postForm.addEventListener("submit", function(event) {
     }
 
     function publishPost(photo) {
-        const newPost = {
-            caption: caption,
-            photo: photo,
-            username: username
-        };
+       const newPost = {
+    id: Date.now().toString() + "_" + Math.random().toString(36).slice(2),
+    caption: caption,
+    photo: photo,
+    username: username
+};
 
         try {
             savedPosts.unshift(newPost);
@@ -384,7 +397,7 @@ postForm.addEventListener("submit", function(event) {
             return;
         }
 
-        showPost(caption, photo, username);
+        showPost(caption, photo, username, newPost.id);
         captionInput.value = "";
         photoInput.value = "";
         alert("Post published!");
