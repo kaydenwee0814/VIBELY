@@ -223,11 +223,14 @@ function showPost(caption, photo, username) {
     const likeButton = document.createElement("button");
     const likeCount = document.createElement("span");
 
-    let likes = 0;
-    let liked = false;
 
-    likeButton.textContent = "♡ Like";
-    likeCount.textContent = " 0 likes";
+    const likeKey = "vibelyLiked_" + username + "_" + caption;
+    let liked = localStorage.getItem(likeKey) === "true";
+    let likes = liked ? 1 : 0;
+
+    likeButton.textContent = liked ? "♥ Liked" : "♡ Like";
+    likeCount.textContent = " " + likes + (likes === 1 ? " like" : " likes");
+
 
     likeButton.style.cursor = "pointer";
     likeButton.style.marginTop = "10px";
