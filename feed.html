@@ -249,6 +249,80 @@ function showPost(caption, photo, username) {
     content.appendChild(likeButton);
     content.appendChild(likeCount);
 
+    // Comments section
+    const commentKey = "vibelyComments_" + username + "_" + caption;
+
+    const commentsBox = document.createElement("div");
+    commentsBox.className = "comments";
+
+    const commentsList = document.createElement("div");
+    commentsBox.appendChild(commentsList);
+
+    let comments = [];
+
+    try {
+        comments = JSON.parse(
+            localStorage.getItem(commentKey) || "[]"
+        );
+    } catch (error) {
+        comments = [];
+    }
+
+    function displayComments() {
+        commentsList.replaceChildren();
+
+        comments.forEach(function(comment) {
+            const line = document.createElement("p");
+            line.textContent = "@" + comment.username + ": " + comment.text;
+            commentsList.appendChild(line);
+        });
+    }
+
+    displayComments();
+
+    const commentForm = document.createElement("form");
+    const commentInput = document.createElement("input");
+    const commentButton = document.createElement("button");
+
+    commentInput.type = "text";
+    commentInput.placeholder = "Write a comment...";
+    commentInput.required = true;
+
+    commentButton.type = "submit";
+    commentButton.textContent = "Comment";
+
+    commentForm.appendChild(commentInput);
+    commentForm.appendChild(commentButton);
+
+    commentForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const text = commentInput.value.trim();
+
+        if (!text) return;
+
+        const newComment = {
+            username: localStorage.getItem("vibelyUsername") || "vibely_user",
+            text: text
+        };
+
+        comments.push(newComment);
+
+        try {
+            localStorage.setItem(commentKey, JSON.stringify(comments));
+        } catch (error) {
+            comments.pop();
+            alert("Could not save comment. Browser storage may be full.");
+            return;
+        }
+
+        displayComments();
+        commentInput.value = "";
+    });
+
+    commentsBox.appendChild(commentForm);
+    content.appendChild(commentsBox);
+
     post.appendChild(content);
 
 
