@@ -252,8 +252,17 @@ function showPost(caption, photo, username) {
     // Comments section
     const commentKey = "vibelyComments_" + username + "_" + caption;
 
+  
     const commentsBox = document.createElement("div");
     commentsBox.className = "comments";
+    commentsBox.style.display = "block";
+    commentsBox.style.visibility = "visible";
+    commentsBox.style.marginTop = "12px";
+    commentsBox.style.padding = "10px";
+    commentsBox.style.borderTop = "1px solid #ddd";
+
+    const commentsList = document.createElement("div");
+    commentsList.style.display = "block";
 
     const commentsList = document.createElement("div");
     commentsBox.appendChild(commentsList);
